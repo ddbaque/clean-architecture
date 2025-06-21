@@ -1,6 +1,6 @@
-# Clean Architecture
+# 🧼 Clean Architecture
 
-## Introducción 
+## 🎯 Introducción 
 
 Cuando empiezas en el mundo del desarrollo de *software*, lo más común es elegir un lenguaje con el que comenzar. Luego sigues con mini proyectos hasta llegar al punto en que quieres realizar tu primer proyecto serio (ya sea pequeño o mediano). En ese momento, es probable que, entre la gran cantidad de problemas que se te presentan --como qué librerías utilizar--, el problema de qué arquitectura usar para organizar tu código no sea uno de ellos.
 
@@ -8,7 +8,7 @@ A primera vista, el cómo organizar tu código quizás no suene interesante, per
 
 Lo más común que habrás escuchado sobre arquitectura/diseño de software seguramente sea el término *Clean Architecture*. Pero, ¿qué es realmente esto?
 
-## ¿ Qué es Clean Architecture?
+## 🤔 ¿Qué es Clean Architecture?
 
 Básicamente podemos decir que es un enfoque hacia el diseño de nuestras aplicaciones, de como debemos estructurar nuestro código, ficheros, directorios, etc. Esto es fundamental porque evitamos crear código spaguetti. 
 
