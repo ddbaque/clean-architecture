@@ -10,7 +10,6 @@ import { Request, Response } from "express";
 export class AuthController {
   constructor(private readonly authRepository: AuthRepository) { }
 
-  // podria ser una funcion global
   private handleError = (error: unknown, res: Response) => {
     if (error instanceof CustomError)
       return res.status(error.statusCode).json({ error: error.message });
