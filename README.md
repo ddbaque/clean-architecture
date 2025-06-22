@@ -140,3 +140,91 @@ Los **Repositorios** definen como operar los datos, solo orquesta no realiza. No
 
 Los **Data Sources** son quienes se encargan de interactuar con la base de datos. Cumplen un contrato definido en esta capa, por lo tanto podemos tener multiples base de datos que mientras cumplan dicha interfaz nuestra capa de dominio la puede utilizar.
 
+### 🚧 Capa de Infraestructura
+
+📁 Ubicación: /src/infrastructure/
+
+**¿Qué hace?**
+
+- Implementa las interfaces definidas en Domain
+- Se conecta con servicios externos (bases de datos, APIs, etc.)
+- Contiene mappers para convertir datos
+- Maneja detalles técnicos específicos
+
+**Árbol de Directorios**
+
+```bash
+infrastructure/
+├── datasources/
+│   └── postgres/
+│       └── auth.datasource.impl.ts # IMPLEMENTACIÓN del datasource
+├── repositories/
+│   └── auth.repository.impl.ts     # IMPLEMENTACIÓN del repositorio
+└── mappers/
+    └── user.mapper.ts              # Convierte datos DB ↔ Entidades
+```
+
+Esto es lo más fácil, solo hay que saber que aquí es donde se implementan los contratos definidos en la Capa de Dominio.
+
+**Ejemplo de DataSource Implementation**
+
+```typescript
+export class AuthDataSourceImpl implements AuthDatasource {
+  constructor(
+    private hashPassword: HashPasswordFuncion,
+    private comparePassword: ComparePasswordFuncion,
+  ) { }
+  async register(registerUserDto: RegisterUserDto): Promise<User> {
+    const { name, email, password } = registerUserDto;
+
+    try {
+      const pool = PostgresDatabase.getPool();
+
+      // Verificar si el correo existe
+      const selectUserQuery = `SELECT * FROM "user" WHERE email = $1`;
+      const values = [email];
+      const res = await pool.query(selectUserQuery, values);
+
+      if (res.rows.length > 0)
+        throw CustomError.badRequest("Problem with your credentials");
+
+      // Crear el usuario sabiendo que no hay otro con un email igual
+      const createUserQuery =
+        'INSERT INTO "user" (email, name, password) VALUES ($1, $2, $3) RETURNING *;';
+      const hashedPassword = this.hashPassword(password);
+      const createUserValues = [email, name, hashedPassword];
+      const resCreatedUser = await pool.query(
+        createUserQuery,
+        createUserValues,
+      );
+
+      console.log(resCreatedUser.rows);
+
+      const createdUser = resCreatedUser.rows[0];
+
+
+      return Promise.resolve(UserMapper.userEntityFromObject(createdUser));
+    } catch (error) {
+      console.log(error);
+      if (error instanceof CustomError) {
+        throw error;
+      }
+
+      throw CustomError.internalServer();
+    }
+  }
+}
+```
+
+Este datasouce cumple el contrato definido en Dominio, si en un futuro en lugar de usar **PostgreSQL**, queremos usar **MongoDB** solo tendriamos que crear otro datasource que implemente el mismo contrato.
+
+## 📋 Reglas de Oro
+
+1. Las capas internas **NO** conocen las externas
+2. Solo se importa hacia adentro (Domain ← Infrastructure ← Presentation)
+3. Las interfaces se definen en Domain
+4. Las implementaciones van en Infrastructure
+5. La lógica de negocio **SOLO** va en Domain
+
+Esta arquitectura te permite tener un código mantenible, testeable y escalable, donde cada capa tiene una responsabilidad clara y está completamente desacoplada de las demás.
+
