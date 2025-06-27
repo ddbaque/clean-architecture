@@ -1,5 +1,3 @@
-import { Validators } from "@/config";
-
 export class RegisterUserDto {
   private constructor(
     public name: string,
@@ -15,7 +13,6 @@ export class RegisterUserDto {
 
     if (typeof email !== 'string') return ['Email must be a string'];
     if (!email.trim()) return ['Missing email'];
-    // if (!Validators.email.test(email)) return ['Email is not valid'];
 
     if (typeof password !== 'string') return ['Password must be a string'];
     if (!password.trim()) return ['Missing password'];

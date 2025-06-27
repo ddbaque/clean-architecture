@@ -1,4 +1,3 @@
-import { BcryptAdapter } from "@/config";
 import { PostgresDatabase } from "@/data/postgres/postgres-database";
 import { AuthDatasource, CustomError, RegisterUserDto, User } from "@/domain";
 import { UserMapper } from "@/infrastructure/mappers";

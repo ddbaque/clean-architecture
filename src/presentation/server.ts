@@ -1,5 +1,5 @@
 import express, { Router } from "express";
-
+import morgan from 'morgan'
 
 export class Server {
   public readonly app = express();
@@ -10,16 +10,17 @@ export class Server {
     const { port, routes } = options;
 
     this._port = port;
-    this._routes = routes
+    this._routes = routes;
   }
 
   async start() {
+    // Middlewares
+    this.app.use(express.json());
+    this.app.use(express.urlencoded());
+    this.app.use(morgan('dev'))
 
-    // Middlewares 
-    this.app.use(express.json())
-    this.app.use(express.urlencoded())
 
-    this.app.use(this._routes)
+    this.app.use(this._routes);
 
     this.app.listen(this._port, () => {
       console.log(`📡 Server is running on port ${this._port}`);

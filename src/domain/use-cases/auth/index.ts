@@ -1,1 +1,1 @@
-export * from "./register-user.user-case";
+export * from "./register-user.use-case";

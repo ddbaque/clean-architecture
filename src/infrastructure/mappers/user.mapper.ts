@@ -15,4 +15,8 @@ export class UserMapper {
 
     return new User(_id || id, name, email, password);
   }
+
+  static userArrayEntityFromObject(data: { [key: string]: any }[]) {
+    return data.map((user) => this.userEntityFromObject(user));
+  }
 }
