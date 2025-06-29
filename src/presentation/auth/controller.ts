@@ -1,53 +1,42 @@
-import { PostgresDatabase } from "@/data/postgres/postgres-database";
 import {
   AuthRepository,
   CustomError,
+  LoginUserDto,
   RegisterUser,
   RegisterUserDto,
 } from "@/domain";
 import { Request, Response } from "express";
+import { ResponseFactory } from "../utils/response-factory";
+import { LoginUser } from "@/domain/use-cases/auth/login-user.use-case";
 
 export class AuthController {
-  constructor(private readonly authRepository: AuthRepository) { }
+  constructor(private readonly authRepository: AuthRepository) {}
 
-  private handleError = (error: unknown, res: Response) => {
-    if (error instanceof CustomError)
-      return res.status(error.statusCode).json({ error: error.message });
-
-    console.log(error);
-
-    return res.status(500).json({ error: "Internal Server Error" });
-  };
-
-  registerUser = (req: Request, res: Response) => {
-    // Create the Data Transfer Object
+  registerUser = async (req: Request, res: Response) => {
     const [error, registerUserDto] = RegisterUserDto.create(req.body);
 
-    if (error) {
-      res.status(400).json({ error });
-      return;
-    }
+    if (error) throw new CustomError(400, error);
 
-    new RegisterUser(this.authRepository)
-      .execute(registerUserDto!)
-      .then((data) => res.json(data))
-      .catch((error) => this.handleError(error, res));
+    const user = await new RegisterUser(this.authRepository).execute(
+      registerUserDto!,
+    );
+
+    res
+      .status(201)
+      .json(ResponseFactory.success(user, "User registred successfully."));
   };
 
-  loginUser = (_req: Request, res: Response) => {
-    res.json("login");
-  };
+  loginUser = async (req: Request, res: Response) => {
+    const [error, loginUserDto] = LoginUserDto.create(req.body);
 
-  getUsers = async (req: Request, res: Response) => {
-    const pool = PostgresDatabase.getPool();
-    const queryGetAllUsers = 'SELECT * FROM "user";';
-    pool
-      .query(queryGetAllUsers)
-      .then((resGetAllUsers) =>
-        res
-          .status(200)
-          .json({ users: resGetAllUsers.rows, user: req.body.user }),
-      )
-      .catch(() => res.status(500).json({ error: "Internal Server Error" }));
+    if (error) throw new CustomError(400, error);
+
+    const user = await new LoginUser(this.authRepository).execute(
+      loginUserDto!,
+    );
+
+    res
+      .status(200)
+      .json(ResponseFactory.success(user, "User logged successfully."));
   };
 }

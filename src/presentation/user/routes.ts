@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { UserController } from "./controller";
 import { AuthMiddleware } from "../middlewares";
-import { UserDataSourceImpl } from "@/infrastructure/datasources/postgres/user.datasoucer.impl";
+import { UserDataSourceImpl } from "@/infrastructure/datasources/postgres/user.datasource.impl";
 import { UserRepositoryImpl } from "@/infrastructure/repositories/user.repository.impl";
 
 export class UserRoutes {

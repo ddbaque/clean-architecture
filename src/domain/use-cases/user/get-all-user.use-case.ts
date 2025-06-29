@@ -11,7 +11,7 @@ interface GetAllUsersUseCase {
 }
 
 export class RegisterUser implements GetAllUsersUseCase {
-  constructor(private readonly userRepository: UserRepository) { }
+  constructor(private readonly userRepository: UserRepository) {}
 
   async execute(): Promise<UserToken> {
     const users = await this.userRepository.getAllUser();

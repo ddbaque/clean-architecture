@@ -1,28 +1,67 @@
+import { ErrorCode } from './';
+
 export class CustomError extends Error {
+  public readonly code: ErrorCode;
+
   constructor(
     public readonly statusCode: number,
     public readonly message: string,
+    code?: ErrorCode
   ) {
     super(message);
+    // Si no se proporciona código, lo infiere del statusCode
+    this.code = code || this.inferCodeFromStatus(statusCode);
   }
 
-  static badRequest(message: string) {
-    return new CustomError(400, message);
+  private inferCodeFromStatus(statusCode: number): ErrorCode {
+    switch (statusCode) {
+      case 400:
+        return ErrorCode.VALIDATION_ERROR;
+      case 401:
+        return ErrorCode.UNAUTHORIZED;
+      case 403:
+        return ErrorCode.FORBIDDEN;
+      case 404:
+        return ErrorCode.NOT_FOUND;
+      case 409:
+        return ErrorCode.DUPLICATE_RESOURCE;
+      case 500:
+      default:
+        return ErrorCode.INTERNAL_ERROR;
+    }
   }
 
-  static unauthorizated(message: string) {
-    return new CustomError(401, message);
+  // Métodos estáticos actualizados
+  static badRequest(message: string, code?: ErrorCode): CustomError {
+    return new CustomError(400, message, code || ErrorCode.VALIDATION_ERROR);
   }
 
-  static forbidden(message: string) {
-    return new CustomError(403, message);
+  static unauthorized(message: string): CustomError {
+    return new CustomError(401, message, ErrorCode.UNAUTHORIZED);
   }
 
-  static notFound(message: string) {
-    return new CustomError(404, message);
+  static forbidden(message: string): CustomError {
+    return new CustomError(403, message, ErrorCode.FORBIDDEN);
   }
 
-  static internalServer(message: string = "Internal Server Error") {
-    return new CustomError(500, message);
+  static notFound(message: string): CustomError {
+    return new CustomError(404, message, ErrorCode.NOT_FOUND);
+  }
+
+  static conflict(message: string): CustomError {
+    return new CustomError(409, message, ErrorCode.DUPLICATE_RESOURCE);
+  }
+
+  static internalServer(message: string = "Internal Server Error"): CustomError {
+    return new CustomError(500, message, ErrorCode.INTERNAL_ERROR);
+  }
+
+  // Nuevos métodos para casos específicos
+  static duplicateResource(message: string): CustomError {
+    return new CustomError(409, message, ErrorCode.DUPLICATE_RESOURCE);
+  }
+
+  static validationError(message: string): CustomError {
+    return new CustomError(400, message, ErrorCode.VALIDATION_ERROR);
   }
 }

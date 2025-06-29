@@ -1,56 +1,61 @@
 import { JwtAdapter } from "@/config/jwt";
-import { PostgresDatabase } from "@/data/postgres/postgres-database";
 import { NextFunction, Request, Response } from "express";
+import { CustomError } from "@/domain/errors";
+import { GetUserDto } from "@/domain/dtos/user";
+import { GetUser } from "@/domain/use-cases/user/get-user-by-id.use-case";
+import { UserRepositoryImpl } from "@/infrastructure/repositories/user.repository.impl";
+import { UserDataSourceImpl } from "@/infrastructure/datasources/postgres/";
 
 export class AuthMiddleware {
   static validateJWT = async (
     req: Request,
-    res: Response,
+    _res: Response,
     next: NextFunction,
   ) => {
-    const authorization = req.header("Authorization");
-    console.log(authorization);
-
-    if (!authorization) {
-      res.status(401).json({ error: "No token provided" });
-      return;
-    }
-
-    if (!authorization.startsWith("Bearer")) {
-      res.status(401).json({ error: "Invalid Bearer Token" });
-      return;
-    }
-
-    const token = authorization.split(" ").at(1) || "";
-
     try {
-      // TODO:  payload de jwt adapter
-      //
+      const authorization = req.header("Authorization");
+
+      // No token provided
+      if (!authorization) {
+        throw CustomError.unauthorized("No token provided");
+      }
+
+      // Invalid Bearer format
+      if (!authorization.startsWith("Bearer")) {
+        throw CustomError.unauthorized("Invalid Bearer Token");
+      }
+
+      const token = authorization.split(" ").at(1) || "";
+
+      // Validate token
       const payload = await JwtAdapter.validateToken<{ id: string }>(token);
+
       if (!payload) {
-        res.status(401).json({ error: "Invalid token" });
-        return;
+        throw CustomError.unauthorized("Invalid token");
       }
 
-      const pool = PostgresDatabase.getPool();
+      // Get user from database
+      const [error, getUserDto] = GetUserDto.create(payload);
 
-      const queryGetUserById = 'SELECT * FROM "user" WHERE id = $1';
-      const valuesGetUserById = [payload.id];
-      const resGetUserById = await pool.query(
-        queryGetUserById,
-        valuesGetUserById,
-      );
-
-      if (resGetUserById.rows.length === 0) {
-        res.status(500).json({ error: "Internal Server Error" });
+      if (error) {
+        throw CustomError.badRequest(error);
       }
 
-      req.body.user = resGetUserById.rows[0]
+      const userDataSource = new UserDataSourceImpl();
+      const userRepository = new UserRepositoryImpl(userDataSource);
+      const user = await new GetUser(userRepository).execute(getUserDto!);
 
+      // User not found in database
+      if (user.count === 0) {
+        throw CustomError.notFound("User not found");
+      }
+
+      // Add user to request
+      req.body.user = user.user;
       next();
+
     } catch (error) {
-      console.log(error);
-      res.status(500).json({ error: "Internal Server Error" });
+      next(error);
     }
   };
 }
