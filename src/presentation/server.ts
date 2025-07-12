@@ -2,7 +2,7 @@ import { CustomError } from '@/domain';
 import { ApiError } from '@/domain/errors';
 import { ResponseFactory } from '@/presentation/utils/response-factory';
 
-import express, { NextFunction, Request, Response, Router } from 'express';
+import express, { Express, NextFunction, Request, Response, Router } from 'express';
 import { ZodError } from 'zod';
 
 interface ServerOptions {
@@ -11,7 +11,7 @@ interface ServerOptions {
 }
 
 export class Server {
-	public readonly app = express();
+	public readonly app: Express = express();
 	private readonly _routes: Router;
 	private readonly _port: number;
 

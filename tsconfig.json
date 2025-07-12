@@ -1,19 +1,16 @@
 {
 	"compilerOptions": {
 		"target": "ES2022" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
-		"module": "ESNext",
-		"moduleResolution": "Bundler",
+		"module": "CommonJS",
+		"moduleResolution": "Node",
 		"baseUrl": ".",
 		"paths": {
 			"@/*": ["src/*"]
 		},
-		"allowImportingTsExtensions": false /* Allow imports to include TypeScript file extensions. Requires '--moduleResolution bundler' and either '--noEmit' or '--emitDeclarationOnly' to be set. */,
-		"resolvePackageJsonExports": true /* Use the package.json 'exports' field when resolving package imports. */,
-		"resolvePackageJsonImports": true /* Use the package.json 'imports' field when resolving imports. */,
 		"resolveJsonModule": true,
 		"sourceMap": true /* Create source map files for emitted JavaScript files. */,
 		"outDir": "dist" /* Specify an output folder for all emitted files. */,
-		"noEmit": true /* Disable emitting files from a compilation. */,
+		"declaration": true /* Generate .d.ts files from TypeScript and JavaScript files in your project. */,
 		"esModuleInterop": true /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */,
 		// "preserveSymlinks": true,                         /* Disable resolving symlinks to their realpath. This correlates to the same flag in node. */
 		"forceConsistentCasingInFileNames": true /* Ensure that casing is correct in imports. */,
