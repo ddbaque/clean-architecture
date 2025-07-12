@@ -1,10 +1,10 @@
-import { LoginUserDto, RegisterUserDto } from "../dtos";
-import { User } from "../entities";
+import { LoginUserDto, RegisterUserDto } from '../dtos';
+import { User } from '../entities';
 
 export interface AuthDatasource {
-  // TODO: hacer login
-  //abstract login()
+	// TODO: hacer login
+	//abstract login()
 
-  login(loginUserDto: LoginUserDto): Promise<User>;
-  register(registerUserDto: RegisterUserDto): Promise<User>;
+	login(loginUserDto: LoginUserDto): Promise<User>;
+	register(registerUserDto: RegisterUserDto): Promise<User>;
 }

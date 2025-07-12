@@ -1,31 +1,31 @@
 {
-  "compilerOptions": {
-    "target": "ES2022" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"]
-    },
-    "allowImportingTsExtensions": false /* Allow imports to include TypeScript file extensions. Requires '--moduleResolution bundler' and either '--noEmit' or '--emitDeclarationOnly' to be set. */,
-    "resolvePackageJsonExports": true /* Use the package.json 'exports' field when resolving package imports. */,
-    "resolvePackageJsonImports": true /* Use the package.json 'imports' field when resolving imports. */,
-    "resolveJsonModule": true,
-    "sourceMap": true /* Create source map files for emitted JavaScript files. */,
-    "outDir": "dist" /* Specify an output folder for all emitted files. */,
-    "noEmit": true /* Disable emitting files from a compilation. */,
-    "esModuleInterop": true /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */,
-    // "preserveSymlinks": true,                         /* Disable resolving symlinks to their realpath. This correlates to the same flag in node. */
-    "forceConsistentCasingInFileNames": true /* Ensure that casing is correct in imports. */,
+	"compilerOptions": {
+		"target": "ES2022" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
+		"module": "ESNext",
+		"moduleResolution": "Bundler",
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["src/*"]
+		},
+		"allowImportingTsExtensions": false /* Allow imports to include TypeScript file extensions. Requires '--moduleResolution bundler' and either '--noEmit' or '--emitDeclarationOnly' to be set. */,
+		"resolvePackageJsonExports": true /* Use the package.json 'exports' field when resolving package imports. */,
+		"resolvePackageJsonImports": true /* Use the package.json 'imports' field when resolving imports. */,
+		"resolveJsonModule": true,
+		"sourceMap": true /* Create source map files for emitted JavaScript files. */,
+		"outDir": "dist" /* Specify an output folder for all emitted files. */,
+		"noEmit": true /* Disable emitting files from a compilation. */,
+		"esModuleInterop": true /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */,
+		// "preserveSymlinks": true,                         /* Disable resolving symlinks to their realpath. This correlates to the same flag in node. */
+		"forceConsistentCasingInFileNames": true /* Ensure that casing is correct in imports. */,
 
-    /* Type Checking */
-    "strict": true /* Enable all strict type-checking options. */,
-    "noUnusedParameters": true /* Raise an error when a function parameter isn't read. */,
-    "exactOptionalPropertyTypes": true /* Interpret optional property types as written, rather than adding 'undefined'. */,
-    "noImplicitReturns": true /* Enable error reporting for codepaths that do not explicitly return in a function. */,
-    "noFallthroughCasesInSwitch": true /* Enable error reporting for fallthrough cases in switch statements. */,
-    "skipLibCheck": true /* Skip type checking all .d.ts files. */
-  },
-  "include": ["src", "*.ts"],
-  "exclude": ["node_modules", "dist"]
+		/* Type Checking */
+		"strict": true /* Enable all strict type-checking options. */,
+		"noUnusedParameters": true /* Raise an error when a function parameter isn't read. */,
+		"exactOptionalPropertyTypes": true /* Interpret optional property types as written, rather than adding 'undefined'. */,
+		"noImplicitReturns": true /* Enable error reporting for codepaths that do not explicitly return in a function. */,
+		"noFallthroughCasesInSwitch": true /* Enable error reporting for fallthrough cases in switch statements. */,
+		"skipLibCheck": true /* Skip type checking all .d.ts files. */
+	},
+	"include": ["src", "*.ts"],
+	"exclude": ["node_modules", "dist"]
 }

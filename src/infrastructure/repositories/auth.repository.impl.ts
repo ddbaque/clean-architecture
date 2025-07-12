@@ -1,19 +1,13 @@
-import {
-  AuthDatasource,
-  AuthRepository,
-  LoginUserDto,
-  RegisterUserDto,
-  User,
-} from "@/domain";
+import { AuthDatasource, AuthRepository, LoginUserDto, RegisterUserDto, User } from '@/domain';
 
 export class AuthRepositoryImpl implements AuthRepository {
-  constructor(private readonly datasource: AuthDatasource) { }
+	constructor(private readonly datasource: AuthDatasource) {}
 
-  login(loginUserDto: LoginUserDto): Promise<User> {
-    return this.datasource.login(loginUserDto)
-  }
+	login(loginUserDto: LoginUserDto): Promise<User> {
+		return this.datasource.login(loginUserDto);
+	}
 
-  register(registerUserDto: RegisterUserDto): Promise<User> {
-    return this.datasource.register(registerUserDto);
-  }
+	register(registerUserDto: RegisterUserDto): Promise<User> {
+		return this.datasource.register(registerUserDto);
+	}
 }

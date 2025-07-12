@@ -1,19 +1,16 @@
+import { UserValidations } from '@/domain/validations/zod/user/user.validations';
+
 export class LoginUserDto {
-  private constructor(
-    public email: string,
-    public password: string,
-  ) { }
+	private constructor(
+		public email: string,
+		public password: string,
+	) {}
 
-  static create(object: { [key: string]: any }): [string | undefined, LoginUserDto?] {
-    const { email, password } = object;
+	static create(object: { [key: string]: any }): [string | undefined, LoginUserDto?] {
+		const validateData = UserValidations.loginUser();
 
-    if (typeof email !== 'string') return ['Email must be a string'];
-    if (!email.trim()) return ['Missing email'];
+		const user = UserValidations.validate(validateData, object);
 
-    if (typeof password !== 'string') return ['Password must be a string'];
-    if (!password.trim()) return ['Missing password'];
-    if (password.length < 6) return ['Password must be at least 6 characters long'];
-
-    return [undefined, new LoginUserDto(email, password)];
-  }
+		return [undefined, new LoginUserDto(user.email, user.password)];
+	}
 }

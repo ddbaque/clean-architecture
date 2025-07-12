@@ -1,7 +1,7 @@
-import { ErrorCode } from "./";
+import { ErrorCode } from './';
 
 export interface ApiError {
-  code: ErrorCode;
-  message: string;
-  details?: any;
+	code: ErrorCode;
+	message: string;
+	details?: any;
 }

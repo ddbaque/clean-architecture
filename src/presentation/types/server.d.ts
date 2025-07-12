@@ -1,4 +1,4 @@
 interface ServerOptions {
-  port: number;
-  routes: Router;
+	port: number;
+	routes: Router;
 }
