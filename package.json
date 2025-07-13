@@ -27,6 +27,7 @@
 		"typescript": "5.8.3"
 	},
 	"dependencies": {
+		"@types/socket.io": "^3.0.2",
 		"bcryptjs": "3.0.2",
 		"dotenv": "16.5.0",
 		"env-var": "^7.5.0",
@@ -36,6 +37,7 @@
 		"morgan": "^1.10.0",
 		"pg": "8.15.6",
 		"slonik": "^47.1.0",
+		"socket.io": "^4.8.1",
 		"tsc-alias": "^1.8.16",
 		"zod": "^3.25.67"
 	}

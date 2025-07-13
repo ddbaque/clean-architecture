@@ -4,6 +4,8 @@ import { ResponseFactory } from '@/presentation/utils/response-factory';
 
 import express, { Express, NextFunction, Request, Response, Router } from 'express';
 import { ZodError } from 'zod';
+import { createServer } from 'http';
+import { Server as SocketIOServer } from 'socket.io';
 
 interface ServerOptions {
 	port: number;
@@ -14,11 +16,21 @@ export class Server {
 	public readonly app: Express = express();
 	private readonly _routes: Router;
 	private readonly _port: number;
+	private readonly _httpServer;
+	public readonly io: SocketIOServer;
 
 	constructor(options: ServerOptions) {
 		const { port, routes } = options;
 		this._port = port;
 		this._routes = routes;
+		this._httpServer = createServer(this.app);
+		this.io = new SocketIOServer(this._httpServer, {
+			cors: {
+				origin: "*",
+				methods: ["GET", "POST"]
+			}
+		});
+		this.setupSocketEvents();
 	}
 
 	async start() {
@@ -32,8 +44,9 @@ export class Server {
 		// Global Error Handler (debe ir al final)
 		this.app.use(this.errorHandler);
 
-		this.app.listen(this._port, () => {
+		this._httpServer.listen(this._port, () => {
 			console.log(`📡 Server is running on port ${this._port}`);
+			console.log(`🔌 Socket.IO server is ready`);
 		});
 	}
 
@@ -88,4 +101,33 @@ export class Server {
 		};
 		res.status(500).json(ResponseFactory.error(apiError));
 	};
+
+	private setupSocketEvents() {
+		this.io.on('connection', (socket) => {
+			console.log(`🔌 User connected: ${socket.id}`);
+
+			socket.on('disconnect', () => {
+				console.log(`🔌 User disconnected: ${socket.id}`);
+			});
+
+			// Example event handlers
+			socket.on('message', (data) => {
+				console.log('Message received:', data);
+				// Broadcast to all clients
+				this.io.emit('message', data);
+			});
+
+			socket.on('join-room', (room) => {
+				socket.join(room);
+				console.log(`🔌 User ${socket.id} joined room: ${room}`);
+				socket.to(room).emit('user-joined', { userId: socket.id });
+			});
+
+			socket.on('leave-room', (room) => {
+				socket.leave(room);
+				console.log(`🔌 User ${socket.id} left room: ${room}`);
+				socket.to(room).emit('user-left', { userId: socket.id });
+			});
+		});
+	}
 }
