@@ -1,11 +1,14 @@
+import { instrument } from '@socket.io/admin-ui';
+
 import { CustomError } from '@/domain';
 import { ApiError } from '@/domain/errors';
+import { SocketEvents, SocketManager } from '@/presentation/socket';
 import { ResponseFactory } from '@/presentation/utils/response-factory';
 
 import express, { Express, NextFunction, Request, Response, Router } from 'express';
-import { ZodError } from 'zod';
 import { createServer } from 'http';
 import { Server as SocketIOServer } from 'socket.io';
+import { ZodError } from 'zod';
 
 interface ServerOptions {
 	port: number;
@@ -26,11 +29,11 @@ export class Server {
 		this._httpServer = createServer(this.app);
 		this.io = new SocketIOServer(this._httpServer, {
 			cors: {
-				origin: "*",
-				methods: ["GET", "POST"]
-			}
+				origin: '*',
+				methods: ['GET', 'POST'],
+			},
 		});
-		this.setupSocketEvents();
+		this.setupSocket();
 	}
 
 	async start() {
@@ -43,6 +46,11 @@ export class Server {
 
 		// Global Error Handler (debe ir al final)
 		this.app.use(this.errorHandler);
+
+		instrument(this.io, {
+			auth: false,
+			mode: 'development',
+		});
 
 		this._httpServer.listen(this._port, () => {
 			console.log(`📡 Server is running on port ${this._port}`);
@@ -102,32 +110,11 @@ export class Server {
 		res.status(500).json(ResponseFactory.error(apiError));
 	};
 
-	private setupSocketEvents() {
-		this.io.on('connection', (socket) => {
-			console.log(`🔌 User connected: ${socket.id}`);
+	private setupSocket(): void {
+		// Initialize the SocketManager singleton with our IO instance
+		SocketManager.getInstance().initialize(this.io);
 
-			socket.on('disconnect', () => {
-				console.log(`🔌 User disconnected: ${socket.id}`);
-			});
-
-			// Example event handlers
-			socket.on('message', (data) => {
-				console.log('Message received:', data);
-				// Broadcast to all clients
-				this.io.emit('message', data);
-			});
-
-			socket.on('join-room', (room) => {
-				socket.join(room);
-				console.log(`🔌 User ${socket.id} joined room: ${room}`);
-				socket.to(room).emit('user-joined', { userId: socket.id });
-			});
-
-			socket.on('leave-room', (room) => {
-				socket.leave(room);
-				console.log(`🔌 User ${socket.id} left room: ${room}`);
-				socket.to(room).emit('user-left', { userId: socket.id });
-			});
-		});
+		// Setup connection events
+		this.io.on('connection', SocketEvents.setupEvents);
 	}
 }

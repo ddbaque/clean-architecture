@@ -143,17 +143,9 @@
                 addMessage('System', `Connection error: ${error.message}`, 'error');
             });
             
-            socket.on('message', (data) => {
-                console.log('Message received:', data);
-                addMessage('Server', JSON.stringify(data), 'info');
-            });
-            
-            socket.on('user-joined', (data) => {
-                addMessage('Room', `User ${data.userId} joined the room`, 'info');
-            });
-            
-            socket.on('user-left', (data) => {
-                addMessage('Room', `User ${data.userId} left the room`, 'info');
+            socket.on('message', (message) => {
+                console.log('Message received:', message);
+                handleUnifiedMessage(message);
             });
         }
         
@@ -163,14 +155,47 @@
             statusEl.className = `status ${isConnected ? 'connected' : 'disconnected'}`;
         }
         
-        function addMessage(sender, message, type = 'normal') {
+        function handleUnifiedMessage(message) {
+            // Manejo del protocolo unificado
+            const { remitter, event, timestamp, data, room } = message;
+            
+            let displayMessage = '';
+            let messageType = 'info';
+            
+            switch (event) {
+                case 'chat-message':
+                    displayMessage = `${data.username}: ${data.text}`;
+                    messageType = 'normal';
+                    break;
+                case 'user-joined':
+                    displayMessage = `User ${data.userId.substring(0, 6)} joined room: ${data.roomName}`;
+                    messageType = 'info';
+                    break;
+                case 'user-left':
+                    displayMessage = `User ${data.userId.substring(0, 6)} left room: ${data.roomName}`;
+                    messageType = 'info';
+                    break;
+                case 'users-updated':
+                    displayMessage = `Users updated: ${data.count} users total`;
+                    messageType = 'success';
+                    break;
+                default:
+                    displayMessage = `${event}: ${JSON.stringify(data)}`;
+                    messageType = 'info';
+            }
+            
+            const roomInfo = room ? ` [Room: ${room}]` : '';
+            addMessage(`${remitter}${roomInfo}`, displayMessage, messageType, timestamp);
+        }
+
+        function addMessage(sender, message, type = 'normal', timestamp = null) {
             const messagesEl = document.getElementById('messages');
             const messageEl = document.createElement('div');
             messageEl.className = 'message';
             
-            const timestamp = new Date().toLocaleTimeString();
+            const displayTime = timestamp ? new Date(timestamp).toLocaleTimeString() : new Date().toLocaleTimeString();
             messageEl.innerHTML = `
-                <strong>[${timestamp}] ${sender}:</strong> ${message}
+                <strong>[${displayTime}] ${sender}:</strong> ${message}
             `;
             
             if (type === 'success') {
