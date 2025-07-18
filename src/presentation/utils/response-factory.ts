@@ -1,4 +1,5 @@
-import { ApiError } from '../../domain/errors/';
+import { ApiError } from '@/domain';
+
 import { BaseResponse, PaginationMeta } from '../../domain/types/';
 
 export class ResponseFactory {
