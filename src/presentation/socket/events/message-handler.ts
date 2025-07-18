@@ -1,6 +1,6 @@
-import { BaseSocketHandler } from './base-socket-handler';
 import { SocketManager } from '../socket-manager';
-import { SocketMessage, SocketEvents, MessageRemitter, ChatMessageData } from '../types/message.types';
+import { ChatMessageData, MessageRemitter, SocketEvents, SocketMessage } from '../types/message.types';
+import { BaseSocketHandler } from './base-socket-handler';
 
 export class MessageHandler extends BaseSocketHandler {
 	setupEvents(): void {
@@ -9,7 +9,7 @@ export class MessageHandler extends BaseSocketHandler {
 
 	private handleMessage(rawData: any): void {
 		this.log(`Message received: ${JSON.stringify(rawData)}`);
-		
+
 		// Crear mensaje con protocolo unificado
 		const message: SocketMessage<ChatMessageData> = {
 			remitter: MessageRemitter.USER,
@@ -17,9 +17,9 @@ export class MessageHandler extends BaseSocketHandler {
 			timestamp: new Date().toISOString(),
 			data: {
 				text: rawData.text || rawData,
-				username: rawData.username || `User-${this.socket.id.substring(0, 6)}`
+				username: rawData.username || `User-${this.socket.id.substring(0, 6)}`,
 			},
-			room: rawData.room
+			room: rawData.room,
 		};
 
 		// Broadcast usando el protocolo unificado

@@ -1,7 +1,8 @@
-import { Socket } from 'socket.io';
+import { ConnectionHandler } from './events/connection-handler';
 import { MessageHandler } from './events/message-handler';
 import { RoomHandler } from './events/room-handler';
-import { ConnectionHandler } from './events/connection-handler';
+
+import { Socket } from 'socket.io';
 
 export class SocketEvents {
 	static setupEvents(socket: Socket): void {

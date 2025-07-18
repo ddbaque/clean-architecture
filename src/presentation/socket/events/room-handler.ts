@@ -1,6 +1,6 @@
-import { BaseSocketHandler } from './base-socket-handler';
 import { SocketManager } from '../socket-manager';
-import { SocketMessage, SocketEvents, MessageRemitter, RoomEventData } from '../types/message.types';
+import { MessageRemitter, RoomEventData, SocketEvents, SocketMessage } from '../types/message.types';
+import { BaseSocketHandler } from './base-socket-handler';
 
 export class RoomHandler extends BaseSocketHandler {
 	setupEvents(): void {
@@ -11,7 +11,7 @@ export class RoomHandler extends BaseSocketHandler {
 	private handleJoinRoom(room: string): void {
 		this.socket.join(room);
 		this.log(`Joined room: ${room}`);
-		
+
 		// Crear mensaje de usuario que se unió
 		const message: SocketMessage<RoomEventData> = {
 			remitter: MessageRemitter.SYSTEM,
@@ -19,9 +19,9 @@ export class RoomHandler extends BaseSocketHandler {
 			timestamp: new Date().toISOString(),
 			data: {
 				roomName: room,
-				userId: this.socket.id
+				userId: this.socket.id,
 			},
-			room
+			room,
 		};
 
 		// Notificar a otros usuarios en la sala
@@ -31,7 +31,7 @@ export class RoomHandler extends BaseSocketHandler {
 	private handleLeaveRoom(room: string): void {
 		this.socket.leave(room);
 		this.log(`Left room: ${room}`);
-		
+
 		// Crear mensaje de usuario que se fue
 		const message: SocketMessage<RoomEventData> = {
 			remitter: MessageRemitter.SYSTEM,
@@ -39,9 +39,9 @@ export class RoomHandler extends BaseSocketHandler {
 			timestamp: new Date().toISOString(),
 			data: {
 				roomName: room,
-				userId: this.socket.id
+				userId: this.socket.id,
 			},
-			room
+			room,
 		};
 
 		// Notificar a otros usuarios en la sala

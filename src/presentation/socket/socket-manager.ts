@@ -1,5 +1,6 @@
+import { MessageRemitter, SocketEvents, SocketMessage } from './types/message.types';
+
 import { Server as SocketIOServer } from 'socket.io';
-import { SocketMessage, SocketEvents, MessageRemitter } from './types/message.types';
 
 export class SocketManager {
 	private static instance: SocketManager;
@@ -38,17 +39,17 @@ export class SocketManager {
 
 	// Método helper para crear y enviar mensajes rápidamente
 	public broadcast<T = any>(
-		event: SocketEvents | string, 
-		data: T, 
+		event: SocketEvents | string,
+		data: T,
 		remitter: MessageRemitter = MessageRemitter.SERVER,
-		room?: string
+		room?: string,
 	): void {
 		const message: SocketMessage<T> = {
 			remitter,
 			event,
 			timestamp: new Date().toISOString(),
 			data,
-			room
+			room,
 		};
 		this.sendMessage(message);
 	}
