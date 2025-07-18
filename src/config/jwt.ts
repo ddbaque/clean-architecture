@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import { type StringValue } from 'ms';
 
 export class JwtAdapter {
-	static async generateToken(payload: Object, duration: StringValue | number = '2h'): Promise<string | null> {
+	static async generateToken(payload: object, duration: StringValue | number = '2h'): Promise<string | null> {
 		return new Promise((resolve) => {
 			jwt.sign(payload, envs.JWT_KEY, { expiresIn: duration }, (error, token) => {
 				if (error) return resolve(null);

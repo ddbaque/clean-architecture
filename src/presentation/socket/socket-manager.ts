@@ -27,7 +27,7 @@ export class SocketManager {
 	}
 
 	// Método genérico para enviar mensajes con protocolo unificado
-	public sendMessage<T = any>(message: SocketMessage<T>): void {
+	public sendMessage<T = unknown>(message: SocketMessage<T>): void {
 		if (this._io) {
 			if (message.room) {
 				this._io.to(message.room).emit('message', message);
@@ -38,7 +38,7 @@ export class SocketManager {
 	}
 
 	// Método helper para crear y enviar mensajes rápidamente
-	public broadcast<T = any>(
+	public broadcast<T = unknown>(
 		event: SocketEvents | string,
 		data: T,
 		remitter: MessageRemitter = MessageRemitter.SERVER,
@@ -49,19 +49,19 @@ export class SocketManager {
 			event,
 			timestamp: new Date().toISOString(),
 			data,
-			room,
+			room: room ?? '',
 		};
 		this.sendMessage(message);
 	}
 
 	// Mantener compatibilidad con métodos anteriores (deprecated)
-	public emit(event: string, data: any): void {
+	public emit(event: string, data: unknown): void {
 		if (this._io) {
 			this._io.emit(event, data);
 		}
 	}
 
-	public emitToRoom(room: string, event: string, data: any): void {
+	public emitToRoom(room: string, event: string, data: unknown): void {
 		if (this._io) {
 			this._io.to(room).emit(event, data);
 		}

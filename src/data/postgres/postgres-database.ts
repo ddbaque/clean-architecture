@@ -35,7 +35,9 @@ export class PostgresDatabase {
 				port: postgresPort,
 				database: postgresDbName,
 			});
-		} catch (error) {}
+		} catch (error) {
+			console.error(error);
+		}
 	}
 
 	/**

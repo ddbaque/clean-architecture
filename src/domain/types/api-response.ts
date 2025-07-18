@@ -1,6 +1,6 @@
 import { ApiError } from '../errors';
 
-export interface BaseResponse<T = any> {
+export interface BaseResponse<T> {
 	success: boolean;
 	data?: T;
 	message?: string;

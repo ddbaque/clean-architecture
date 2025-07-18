@@ -18,7 +18,7 @@ interface LoginUserUseCase {
 	execute(registerUserDto: RegisterUserDto): Promise<UserToken>;
 }
 
-type SignTokenFunction = (payload: Object, duration?: StringValue | number) => Promise<string | null>;
+type SignTokenFunction = (payload: object, duration?: StringValue | number) => Promise<string | null>;
 
 export class LoginUser implements LoginUserUseCase {
 	constructor(

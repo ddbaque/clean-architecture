@@ -1,4 +1,4 @@
-export interface SocketMessage<T = any> {
+export interface SocketMessage<T = unknown> {
 	remitter: string; // Quien envía el mensaje (server, user-id, system, etc.)
 	event: string; // Nombre del evento (user-joined, users-updated, chat-message, etc.)
 	timestamp: string; // ISO string de la fecha
@@ -19,7 +19,7 @@ export interface UserEventData {
 
 export interface UsersUpdatedData {
 	count: number;
-	users?: any[];
+	users?: unknown[];
 }
 
 export interface RoomEventData {
